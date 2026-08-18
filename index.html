@@ -1,321 +1,727 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anshul Singh - Portfolio</title>
-    <meta name="description" content="Anshul Singh's professional portfolio showcasing software development, data analytics, and AI/ML projects">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Anshul Singh — Portfolio</title>
+<meta name="description" content="Anshul Singh — software developer & data analytics specialist. A portfolio in motion." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#f4f1ea;
+    --dim:rgba(244,241,234,0.55);
+    --whisper:rgba(244,241,234,0.22);
+    --rule:rgba(244,241,234,0.12);
+    --accent:#ff5a2c;
+    --serif:'Fraunces','Times New Roman',serif;
+    --sans:'Inter',system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#060606;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  body{cursor:none;}
+  ::selection{background:var(--accent);color:#060606;}
+  a{color:inherit;text-decoration:none;}
+
+  /* scroll range — the page is tall so scroll progress drives the 3D */
+  .scroll-spacer{height:680vh;width:100%;}
+
+  #canvas{position:fixed;inset:0;z-index:1;display:block;}
+
+  /* portrait : scroll-scrubbed frame sequence (the "3D photo" layer) */
+  #portrait{position:fixed;inset:0;z-index:2;display:block;width:100%;height:100%;
+    pointer-events:none;opacity:0;transition:opacity 0.8s;}
+  #portrait.ready{opacity:1;}
+
+  /* film grain + vignette over the 3D + portrait */
+  .grain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");}
+  .vignette{position:fixed;inset:0;z-index:4;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,0.55) 100%);}
+
+  /* overlay UI */
+  .overlay{position:fixed;inset:0;z-index:5;pointer-events:none;}
+  .overlay > *{pointer-events:auto;}
+
+  /* masthead */
+  .mast{position:fixed;top:26px;left:34px;right:34px;z-index:6;
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--sans);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--dim);pointer-events:none;}
+  .brand{color:var(--ink);letter-spacing:0.14em;font-weight:500;}
+  .brand b{color:var(--accent);font-weight:500;}
+  .mast .meta{font-variant-numeric:tabular-nums;}
+  .mast .meta b{color:var(--ink);font-weight:500;}
+
+  /* dragon progress rail (left) : serpentine body draws in with scroll,
+     head rides the playhead. viewBox 60x800, scales to viewport height. */
+  .dragon{position:fixed;left:18px;top:0;height:100vh;width:60px;z-index:6;
+    pointer-events:none;overflow:visible;}
+  #dragonHead{will-change:transform;}
+  #dragonBody{will-change:stroke-dashoffset;}
+
+  /* percentage (bottom right) */
+  .pct{position:fixed;right:34px;bottom:26px;z-index:6;
+    font-family:var(--sans);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--dim);font-variant-numeric:tabular-nums;pointer-events:none;}
+  .pct b{color:var(--ink);font-weight:500;}
+
+  /* scroll hint */
+  .hint{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);z-index:6;
+    font-family:var(--sans);font-size:10.5px;letter-spacing:0.28em;text-transform:uppercase;
+    color:var(--dim);pointer-events:none;transition:opacity 0.6s;}
+  .hint .line{display:block;width:1px;height:34px;background:var(--ink);margin:14px auto 0;
+    animation:drip 2.2s ease-in-out infinite;transform-origin:top;}
+  @keyframes drip{0%,100%{transform:scaleY(0.2);opacity:0.3}50%{transform:scaleY(1);opacity:1}}
+
+  /* chapter sections — pinned, revealed by scroll progress */
+  .stage{position:fixed;inset:0;z-index:5;display:grid;place-items:center;pointer-events:none;}
+  .section{position:absolute;max-width:min(72ch,88vw);text-align:center;
+    opacity:0;transform:translateY(40px);
+    transition:opacity 0.2s linear;will-change:opacity,transform;}
+  /* split sections sit left, leaving the right half for the portrait */
+  .section.split{max-width:min(40ch,40vw);text-align:left;margin-right:auto;margin-left:6vw;
+    align-self:center;}
+  .section.split .kicker{justify-content:flex-start;}
+  .section.split .deck{margin-inline:0;}
+  .section.split .work{margin-inline:0;}
+  .section.split .craft{justify-content:flex-start;}
+  .section.split .links{justify-content:flex-start;}
+  .section .kicker{font-family:var(--sans);font-size:11px;letter-spacing:0.26em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:26px;display:flex;align-items:center;justify-content:center;gap:14px;}
+  .section .kicker::before,.section .kicker::after{content:"";width:38px;height:1px;background:var(--rule);}
+  .section h1{font-family:var(--serif);font-weight:300;font-variation-settings:'opsz' 144;
+    font-size:clamp(44px,7.4vw,116px);line-height:0.96;letter-spacing:-0.035em;color:var(--ink);}
+  .section h1 em{font-style:italic;font-weight:400;color:var(--accent);}
+  .section .deck{margin-top:28px;max-width:54ch;margin-inline:auto;
+    font-size:clamp(15px,1.3vw,20px);line-height:1.6;font-weight:300;color:var(--ink);}
+  .section .deck em{font-style:italic;color:var(--dim);}
+
+  /* work list */
+  .work{margin-top:40px;display:grid;gap:14px;text-align:left;max-width:46ch;margin-inline:auto;}
+  .work .row{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;
+    padding:11px 0;border-top:1px solid var(--rule);
+    font-family:var(--sans);font-size:14px;color:var(--ink);}
+  .work .row .n{color:var(--accent);font-variant-numeric:tabular-nums;font-size:11px;letter-spacing:0.1em;}
+  .work .row .t{font-family:var(--serif);font-style:italic;font-size:19px;font-weight:400;}
+  .work .row .y{color:var(--dim);font-size:11px;letter-spacing:0.14em;font-variant-numeric:tabular-nums;}
+
+  /* craft tags */
+  .craft{margin-top:34px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .craft span{font-family:var(--sans);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--ink);border:1px solid var(--rule);padding:8px 14px;border-radius:999px;}
+
+  /* contact links */
+  .links{margin-top:34px;display:flex;gap:26px;justify-content:center;flex-wrap:wrap;
+    font-family:var(--sans);font-size:13px;letter-spacing:0.04em;}
+  .links a{color:var(--ink);border-bottom:1px solid var(--whisper);padding-bottom:3px;transition:border-color 0.3s,color 0.3s;}
+  .links a:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* custom cursor */
+  .cur,.cur-ring{position:fixed;top:0;left:0;z-index:10;pointer-events:none;border-radius:50%;
+    transform:translate(-50%,-50%);mix-blend-mode:difference;}
+  .cur{width:7px;height:7px;background:var(--ink);}
+  .cur-ring{width:34px;height:34px;border:1px solid var(--ink);transition:width 0.3s,height 0.3s,opacity 0.3s;}
+  .cur-ring.hot{width:54px;height:54px;}
+
+  /* loader */
+  .loader{position:fixed;inset:0;z-index:20;background:#060606;display:grid;place-items:center;
+    transition:opacity 0.8s 0.2s; }
+  .loader .lt{font-family:var(--sans);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);}
+  .loader .lt b{color:var(--accent);}
+  .loader.gone{opacity:0;pointer-events:none;}
+
+  @media (max-width:760px){
+    .mast{left:18px;right:18px;top:18px;font-size:10px;}
+    .dragon,.pct{display:none;}
+    .section.split{max-width:90vw;margin-inline:auto;text-align:center;align-self:center;}
+    .section.split .kicker{justify-content:center;}
+    .section.split .deck,.section.split .work{margin-inline:auto;}
+    .section.split .craft,.section.split .links{justify-content:center;}
+    .section h1{font-size:clamp(40px,11vw,72px);}
+    .work{max-width:90vw;}
+    .work .row{grid-template-columns:auto 1fr;gap:12px;}
+    .work .row .y{grid-column:2;color:var(--dim);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:0.001s !important;transition-duration:0.05s !important;}
+  }
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#skills" class="nav-link">Skills</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </div>
-            <div class="nav-toggle" id="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Hi, I'm <span class="highlight" data-text="Anshul">Anshul</span>
-                </h1>
-                <p class="hero-subtitle">Software Developer & Data Analytics Specialist</p>
-                <p class="hero-description">
-                    I specialize in developing automated solutions, AI/ML applications, and data-driven
-                    systems that optimize business operations and create meaningful impact.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="hero-image-placeholder">
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="scroll-arrow"></div>
-        </div>
-    </section>
+<canvas id="canvas"></canvas>
+<canvas id="portrait"></canvas>
+<div class="grain"></div>
+<div class="vignette"></div>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I'm a passionate software developer and data analytics specialist with experience in 
-                        AI/ML applications, automation, and revenue operations. Recently graduated with a B.Tech 
-                        Honours in Computer Science and Business Systems from SASTRA University with a CGPA of 8.01. 
-                        My journey spans from developing automated trading bots to creating AI-powered chatbots.
-                    </p>
-                    <p>
-                        Currently, I focus on building intelligent automation solutions, analyzing business data 
-                        for insights, and developing scalable applications. I've worked with companies like ZOHO, 
-                        where I improved business efficiency through data analysis and AI implementations. I'm 
-                        passionate about leveraging technology to solve real-world problems.
-                    </p>
-                    <div class="about-stats">
-                        <div class="stat">
-                            <h3>3+</h3>
-                            <p>Major Projects</p>
-                        </div>
-                        <div class="stat">
-                            <h3>2+</h3>
-                            <p>Industry Experience</p>
-                        </div>
-                        <div class="stat">
-                            <h3>1</h3>
-                            <p><a href="https://doi.org/10.56726/IRJMETS37685" target="_blank" style="color: inherit; text-decoration: none;">Research Publication</a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-image">
-                    <div class="about-image-placeholder">
-                        <i class="fas fa-code"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="loader" id="loader"><div class="lt">loading · <b>Anshul</b></div></div>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-placeholder">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link"><i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3>Automated Trading Bot</h3>
-                        <p>Python-based option selling bot deployed on AWS Lambda with 24x7 automated operation. Executes up to 4 trades daily based on market volatility with ~1% weekly returns. Features robust security with IP whitelisting and HMAC-based authentication.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">AWS Lambda</span>
-                            <span class="tech-tag">REST API</span>
-                        </div>
-                    </div>
-                </div>
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
 
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-placeholder">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="https://github.com/ekanshul/image-captioning" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://github.com/ekanshul/image-captioning" class="project-link"><i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3>Image Captioning using RCNN and LSTM</h3>
-                        <p>Advanced image captioning model combining R-CNN and LSTM with ResNet-101 classifier. Implemented evaluation metrics like BLEU and METEOR to assess model efficiency and enhanced descriptive capabilities.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">TensorFlow</span>
-                            <span class="tech-tag">ResNet-101</span>
-                        </div>
-                    </div>
-                </div>
+<header class="mast">
+  <div class="brand">Anshul Singh<b>·</b>portfolio</div>
+  <div class="meta"><b id="clock">--:--:--</b> &nbsp;gmt</div>
+</header>
 
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-placeholder">
-                            <i class="fas fa-seedling"></i>
-                        </div>
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link"><i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3>Automated Agriculture System</h3>
-                        <p>Designed using Design Thinking approach to enhance agricultural efficiency. Automated irrigation, fertigation, fruit ripeness monitoring, and weather tracking to empower farmers with higher productivity in agricultural practices.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">IoT</span>
-                            <span class="tech-tag">Design Thinking</span>
-                            <span class="tech-tag">Hardware Design</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- dragon rail : a serpentine dragon whose body draws in with scroll,
+     head (the tick) rides the playhead down the page. -->
+<svg class="dragon" id="dragon" viewBox="0 0 60 800" preserveAspectRatio="xMidYMin meet"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dbody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"  stop-color="#ff5a2c"/>
+      <stop offset="0.5" stop-color="#ff8a3c"/>
+      <stop offset="1"  stop-color="#f4f1ea"/>
+    </linearGradient>
+    <filter id="dglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- faint full silhouette of the dragon path (the route it will trace) -->
+  <path id="dragonGhost" d="M30 8 C44 70, 16 130, 30 190 C44 250, 16 310, 30 370
+       C44 430, 16 490, 30 550 C44 610, 16 670, 30 730"
+       fill="none" stroke="rgba(244,241,234,0.07)" stroke-width="2"/>
+  <!-- the drawn dragon body : stroke-dashoffset animates with scroll -->
+  <path id="dragonBody" d="M30 8 C44 70, 16 130, 30 190 C44 250, 16 310, 30 370
+       C44 430, 16 490, 30 550 C44 610, 16 670, 30 730"
+       fill="none" stroke="url(#dbody)" stroke-width="2.4" stroke-linecap="round"
+       filter="url(#dglow)" pathLength="1000" stroke-dasharray="1000 1000"
+       stroke-dashoffset="1000"/>
+  <!-- whiskers + scales : small ticks branching off the body at intervals -->
+  <g id="dragonTicks" stroke="rgba(255,90,44,0.5)" stroke-width="1" stroke-linecap="round"></g>
+  <!-- the head : a stylized dragon tick that rides the playhead -->
+  <g id="dragonHead" filter="url(#dglow)" transform="translate(30 8)">
+    <!-- whiskers -->
+    <path d="M0 0 C-6 -6, -14 -4, -18 2" fill="none" stroke="#ff8a3c" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M0 0 C6 -6, 14 -4, 18 2" fill="none" stroke="#ff8a3c" stroke-width="1.1" stroke-linecap="round"/>
+    <!-- head shape -->
+    <path d="M-7 -2 C-9 -7, -3 -11, 3 -10 C9 -8, 10 -2, 7 2 C5 5, 0 6, -4 4 C-7 2, -8 0, -7 -2 Z"
+          fill="#ff5a2c"/>
+    <!-- eye -->
+    <circle cx="1" cy="-4" r="1.1" fill="#060606"/>
+    <!-- horns -->
+    <path d="M-2 -9 C-4 -13, -7 -14, -9 -17" fill="none" stroke="#f4f1ea" stroke-width="1" stroke-linecap="round"/>
+    <path d="M3 -9 C5 -13, 8 -14, 10 -17" fill="none" stroke="#f4f1ea" stroke-width="1" stroke-linecap="round"/>
+  </g>
+</svg>
+<div class="pct"><b id="pct">00</b> / 100</div>
+<div class="hint" id="hint">scroll<span class="line"></span></div>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-content">
-                <div class="skills-category">
-                    <h3>Programming & Development</h3>
-                    <div class="skills-list">
-                        <div class="skill-item">
-                            <i class="fab fa-python"></i>
-                            <span>Python</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fab fa-js-square"></i>
-                            <span>JavaScript</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fab fa-php"></i>
-                            <span>PHP</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fab fa-html5"></i>
-                            <span>HTML5</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fab fa-css3-alt"></i>
-                            <span>CSS3</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fab fa-bootstrap"></i>
-                            <span>Bootstrap</span>
-                        </div>
-                    </div>
-                </div>
+<div class="stage">
 
-                <div class="skills-category">
-                    <h3>AI/ML & Data Analytics</h3>
-                    <div class="skills-list">
-                        <div class="skill-item">
-                            <i class="fas fa-brain"></i>
-                            <span>TensorFlow</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-robot"></i>
-                            <span>LSTM & RCNN</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Data Analytics</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-camera"></i>
-                            <span>Computer Vision</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-cogs"></i>
-                            <span>ResNet-101</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-comments"></i>
-                            <span>Chatbot Development</span>
-                        </div>
-                    </div>
-                </div>
+  <section class="section split" data-c="0.06" data-h="0.10">
+    <div class="kicker">chapter one · an introduction</div>
+    <h1>hi, i'm <em>Anshul</em>.<br/>i build things<br/>that think.</h1>
+    <p class="deck">software developer &amp; data analytics specialist. i build intelligent automation, analyze business data for insight, and ship scalable applications — with a focus on AI/ML that solves real problems.</p>
+  </section>
 
-                <div class="skills-category">
-                    <h3>Cloud & Tools</h3>
-                    <div class="skills-list">
-                        <div class="skill-item">
-                            <i class="fab fa-aws"></i>
-                            <span>AWS Lambda</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-database"></i>
-                            <span>MySQL</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-code"></i>
-                            <span>REST APIs</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-spider"></i>
-                            <span>Web Scraping</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-microchip"></i>
-                            <span>IoT</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-lightbulb"></i>
-                            <span>Design Thinking</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="section" data-c="0.30" data-h="0.13">
+    <div class="kicker">chapter two · featured work</div>
+    <h1>the <em>work</em>.</h1>
+    <div class="work">
+      <div class="row"><span class="n">01</span><span class="t">Automated Trading Bot</span><span class="y">Python · AI</span></div>
+      <div class="row"><span class="n">02</span><span class="t">Image Captioning (RCNN + LSTM)</span><span class="y">CV · DL</span></div>
+      <div class="row"><span class="n">03</span><span class="t">Automated Agriculture System</span><span class="y">IoT · ML</span></div>
+      <div class="row"><span class="n">04</span><span class="t">Dynamo Log Report</span><span class="y">Python · AWS</span></div>
+      <div class="row"><span class="n">05</span><span class="t">Research Publication</span><span class="y">IRJMETS</span></div>
+    </div>
+  </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-content-centered">
-                <div class="contact-info-main">
-                    <h3>Let's Connect!</h3>
-                    <p>
-                        I'm always interested in hearing about new projects and opportunities.
-                        Whether you're looking to build something from scratch or need help
-                        with an existing project, feel free to reach out!
-                    </p>
-                    <div class="contact-details">
-                        <div class="contact-detail">
-                            <i class="fas fa-envelope"></i>
-                            <span>emmanshul@gmail.com</span>
-                        </div>
-                        <div class="contact-detail">
-                            <i class="fas fa-phone"></i>
-                            <span>+91-9807050094</span>
-                        </div>
-                        <div class="contact-detail">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>India</span>
-                        </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="https://github.com/ekanshul" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://linkedin.com/in/ekanshul" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://x.com/ekanshul07" class="social-link" title="Twitter/X"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="section" data-c="0.54" data-h="0.11">
+    <div class="kicker">chapter three · skills &amp; tools</div>
+    <h1>the <em>stack</em>.</h1>
+    <p class="deck">Python &amp; JavaScript for building. TensorFlow &amp; computer vision for seeing. AWS Lambda &amp; REST APIs for scale. MySQL &amp; data analytics for insight.</p>
+    <div class="craft">
+      <span>Python</span><span>JavaScript</span><span>TensorFlow</span><span>Computer Vision</span><span>Data Analytics</span><span>AWS Lambda</span><span>MySQL</span><span>REST APIs</span><span>IoT</span><span>PHP</span>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Anshul Singh. All rights reserved.</p>
-        </div>
-    </footer>
+  <section class="section" data-c="0.76" data-h="0.10">
+    <div class="kicker">chapter four · about</div>
+    <h1>ship,<br/>then <em>sharpen</em>.</h1>
+    <p class="deck">Honours in Computer Science &amp; Business Systems from SASTRA University (CGPA 8.01). Worked at <em>ZOHO</em>, improving business efficiency through data analysis and AI. 3+ major projects, 2+ industry engagements, 1 research publication.</p>
+  </section>
 
-    <script src="script.js"></script>
+  <section class="section split" data-c="0.94" data-h="0.06">
+    <div class="kicker">chapter five · let's connect</div>
+    <h1>let's <em>talk</em>.</h1>
+    <div class="links">
+      <a href="mailto:emmanshul@gmail.com">emmanshul@gmail.com</a>
+      <a href="https://github.com/ekanshul" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/ekanshul" target="_blank">LinkedIn</a>
+      <a href="https://x.com/ekanshul07" target="_blank">Twitter / X</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="scroll-spacer"></div>
+
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://unpkg.com/three@0.158.0/build/three.module.js",
+    "three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mobile = window.innerWidth < 760;
+
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+const dpr = Math.min(mobile ? 1.5 : 2, window.devicePixelRatio || 1);
+
+/* ---------------- scene ---------------- */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x060606);
+scene.fog = new THREE.FogExp2(0x060606, 0.045);
+
+const camera = new THREE.PerspectiveCamera(34, W()/H(), 0.1, 100);
+camera.position.set(0, 0, 5.4);
+
+const renderer = new THREE.WebGLRenderer({
+  canvas: document.getElementById('canvas'),
+  antialias: !mobile,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(dpr);
+renderer.setSize(W(), H(), false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+/* environment for reflections on the metal crystals */
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+/* ---------------- the orb : iridescent noise-displaced sphere ---------------- */
+const SIMPLEX = `
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g;
+  vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))
+        +i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z);
+  vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy;
+  vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0;
+  vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y);
+  vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}
+`;
+
+const orbVert = `
+uniform float uTime; uniform float uAmp; uniform float uFreq; uniform float uMix;
+varying vec3 vWorldPos; varying vec3 vViewDir; varying float vN;
+${SIMPLEX}
+float disp(vec3 p){
+  float n1 = snoise(p*uFreq + uTime*0.30);
+  float n2 = snoise(p*uFreq*2.1 - uTime*0.22);
+  return n1*uMix + n2*(1.0-uMix);
+}
+void main(){
+  vec3 p = position;
+  float n = disp(p);
+  vN = n;
+  p += normalize(position) * n * uAmp;
+  vec4 wp = modelMatrix * vec4(p,1.0);
+  vWorldPos = wp.xyz;
+  vViewDir = normalize(cameraPosition - wp.xyz);
+  gl_Position = projectionMatrix * viewMatrix * wp;
+}`;
+
+const orbFrag = `
+uniform float uTime; uniform float uAmp; uniform vec3 uAccent;
+varying vec3 vWorldPos; varying vec3 vViewDir; varying float vN;
+vec3 palette(float t){
+  vec3 a=vec3(0.5),b=vec3(0.5),c=vec3(1.0),d=vec3(0.0,0.33,0.67);
+  return a + b*cos(6.28318*(c*t + d));
+}
+void main(){
+  vec3 N = normalize(vWorldPos);
+  float fres = pow(1.0 - max(dot(N, vViewDir), 0.0), 2.6);
+  float t = fres*0.65 + uTime*0.04 + vN*0.5 + dot(N, vViewDir)*0.25;
+  vec3 irid = palette(t);
+  vec3 base = mix(vec3(0.02,0.02,0.03), irid, 0.35 + fres*0.65);
+  vec3 col = base + fres*1.15*uAccent;
+  col += pow(fres, 5.0) * 2.2; /* hot rim */
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+const orbGeo = new THREE.IcosahedronGeometry(1.35, mobile ? 5 : 7);
+const orbMat = new THREE.ShaderMaterial({
+  vertexShader: orbVert, fragmentShader: orbFrag,
+  uniforms:{
+    uTime:{value:0}, uAmp:{value:0.16}, uFreq:{value:1.25}, uMix:{value:0.5},
+    uAccent:{value:new THREE.Color(0xff5a2c)}
+  }
+});
+const orb = new THREE.Mesh(orbGeo, orbMat);
+scene.add(orb);
+
+/* inner glow core */
+const core = new THREE.Mesh(
+  new THREE.SphereGeometry(0.9, 32, 32),
+  new THREE.MeshBasicMaterial({color:0xff5a2c, transparent:true, opacity:0.12})
+);
+scene.add(core);
+
+/* ---------------- orbiting metal crystals ---------------- */
+const crystals = [];
+const crystalGroup = new THREE.Group();
+scene.add(crystalGroup);
+const NC = mobile ? 5 : 9;
+for (let i=0;i<NC;i++){
+  const g = new THREE.OctahedronGeometry(0.16 + Math.random()*0.12, 0);
+  const m = new THREE.MeshPhysicalMaterial({
+    color:0xf4f1ea, metalness:1.0, roughness:0.12, envMapIntensity:1.3,
+    clearcoat:1.0, clearcoatRoughness:0.2
+  });
+  const mesh = new THREE.Mesh(g, m);
+  const a = (i/NC)*Math.PI*2;
+  const r = 2.4 + Math.random()*1.2;
+  mesh.userData = {
+    a, r, y:(Math.random()-0.5)*2.0, sp:0.15+Math.random()*0.25,
+    bob:Math.random()*Math.PI*2, rs:(Math.random()-0.5)*1.4
+  };
+  crystalGroup.add(mesh);
+  crystals.push(mesh);
+}
+
+/* ---------------- particle dust ---------------- */
+const NP = mobile ? 600 : 1600;
+const ppos = new Float32Array(NP*3);
+for (let i=0;i<NP;i++){
+  const r = 4 + Math.random()*10;
+  const th = Math.random()*Math.PI*2;
+  const ph = Math.acos(2*Math.random()-1);
+  ppos[i*3]   = r*Math.sin(ph)*Math.cos(th);
+  ppos[i*3+1] = r*Math.sin(ph)*Math.sin(th);
+  ppos[i*3+2] = r*Math.cos(ph);
+}
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(ppos, 3));
+const pMat = new THREE.PointsMaterial({
+  size:0.018, color:0xf4f1ea, transparent:true, opacity:0.5,
+  blending:THREE.AdditiveBlending, depthWrite:false
+});
+const dust = new THREE.Points(pGeo, pMat);
+scene.add(dust);
+
+/* ---------------- lights (the orb is shader-lit, but crystals need light) ---------------- */
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+const key = new THREE.PointLight(0xfff0e2, 40, 40, 1.4); key.position.set(6,5,7); scene.add(key);
+const fill = new THREE.PointLight(0x6da8ff, 18, 40, 1.6); fill.position.set(-6,-3,5); scene.add(fill);
+const rim = new THREE.PointLight(0xff5a2c, 22, 40, 1.6); rim.position.set(0,-5,-6); scene.add(rim);
+
+/* ---------------- postprocessing : bloom ---------------- */
+const composer = new EffectComposer(renderer);
+composer.setPixelRatio(dpr);
+composer.setSize(W(), H());
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W(), H()), mobile?0.55:0.85, 0.42, 0.82);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+/* ---------------- scroll progress (lerped for butter) ---------------- */
+let rawProgress = 0, progress = 0;
+function onScroll(){
+  const max = document.documentElement.scrollHeight - H();
+  rawProgress = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+}
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+
+/* ---------------- camera + uniform keyframes along progress ---------------- */
+const KEYS = [
+  { p:0.00, cam:[0,    0,    5.4], tgt:[0,0,0], amp:0.14, mix:0.5, exp:1.05 },
+  { p:0.25, cam:[3.3,  1.3,  4.0], tgt:[0,0,0], amp:0.26, mix:0.62, exp:1.1 },
+  { p:0.50, cam:[-3.7, 2.6,  3.3], tgt:[0,0,0], amp:0.40, mix:0.78, exp:1.15 },
+  { p:0.75, cam:[0.6,  4.0,  3.0], tgt:[0,0,0], amp:0.22, mix:0.4, exp:1.05 },
+  { p:1.00, cam:[0,    0.6,  6.8], tgt:[0,0,0], amp:0.10, mix:0.5, exp:1.0 }
+];
+const _v = new THREE.Vector3();
+function sampleKeys(p){
+  let a = KEYS[0], b = KEYS[KEYS.length-1];
+  for (let i=0;i<KEYS.length-1;i++){
+    if (p >= KEYS[i].p && p <= KEYS[i+1].p){ a = KEYS[i]; b = KEYS[i+1]; break; }
+  }
+  const t = (p - a.p) / Math.max(1e-6, (b.p - a.p));
+  const e = t*t*(3-2*t); /* smoothstep */
+  return {
+    cam:[ a.cam[0]+(b.cam[0]-a.cam[0])*e, a.cam[1]+(b.cam[1]-a.cam[1])*e, a.cam[2]+(b.cam[2]-a.cam[2])*e ],
+    amp:a.amp+(b.amp-a.amp)*e,
+    mix:a.mix+(b.mix-a.mix)*e,
+    exp:a.exp+(b.exp-a.exp)*e
+  };
+}
+
+/* ---------------- section reveal ---------------- */
+const sections = [...document.querySelectorAll('.section')];
+function updateSections(p){
+  for (const s of sections){
+    const c = parseFloat(s.dataset.c), h = parseFloat(s.dataset.h);
+    const d = Math.abs(p - c);
+    const op = Math.max(0, 1 - (d/h));           /* 1 at center, 0 at edges */
+    const e = op*op*(3-2*op);                    /* smoothstep */
+    s.style.opacity = e;
+    s.style.transform = `translateY(${(p - c) * -160}px)`;
+    s.style.filter = 'none';                      /* no blur — readable */
+    s.style.pointerEvents = e > 0.5 ? 'auto' : 'none';
+  }
+}
+
+/* ---------------- cursor ---------------- */
+const cur = document.getElementById('cur');
+const curRing = document.getElementById('curRing');
+const mouse = { x: W()/2, y: H()/2, rx: W()/2, ry: H()/2 };
+window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, {passive:true});
+window.addEventListener('pointerover', e => {
+  const hot = !!(e.target.closest('a, .links a'));
+  curRing.classList.toggle('hot', hot);
+});
+
+/* ---------------- dragon rail + pct + clock + hint ---------------- */
+const dragonBody = document.getElementById('dragonBody');
+const dragonGhost = document.getElementById('dragonGhost');
+const dragonHead = document.getElementById('dragonHead');
+const dragonTicks = document.getElementById('dragonTicks');
+const pctEl = document.getElementById('pct');
+const hint = document.getElementById('hint');
+const clock = document.getElementById('clock');
+setInterval(()=>{ clock.textContent = new Date().toISOString().slice(11,19); }, 1000);
+
+/* dragon path geometry : the same `d` as the body, used to place the head
+   and the tick marks at exact arc-length positions. */
+const dragonPath = dragonBody;                 /* shares the path d */
+const DRAGON_LEN = dragonPath.getTotalLength(); /* real arc length for point placement */
+const DRAGON_DASH = 1000;                       /* normalized pathLength for the stroke dash */
+/* emit small whisker ticks along the dragon to mark chapter positions */
+(function emitTicks(){
+  const N = 8;
+  for (let i=1;i<N;i++){
+    const pt = dragonPath.getPointAtLength(DRAGON_LEN * i / N);
+    const side = i % 2 === 0 ? 1 : -1;
+    const tick = document.createElementNS('http://www.w3.org/2000/svg','line');
+    tick.setAttribute('x1', pt.x);
+    tick.setAttribute('y1', pt.y);
+    tick.setAttribute('x2', pt.x + side * 7);
+    tick.setAttribute('y2', pt.y + side * 2);
+    dragonTicks.appendChild(tick);
+  }
+})();
+let dragonProgress = 0;
+function updateDragon(raw){
+  /* ease the dragon slightly so it glides rather than snapping */
+  dragonProgress += (raw - dragonProgress) * 0.18;
+  const p = clamp01(dragonProgress);
+  /* draw the body in (normalized dash) */
+  dragonBody.style.strokeDashoffset = String(DRAGON_DASH * (1 - p));
+  /* move the head to the point at length p along the path (real arc length) */
+  const pt = dragonPath.getPointAtLength(DRAGON_LEN * p);
+  dragonHead.setAttribute('transform', `translate(${pt.x} ${pt.y})`);
+}
+
+/* ---------------- resize ---------------- */
+function resize(){
+  camera.aspect = W()/H(); camera.updateProjectionMatrix();
+  renderer.setSize(W(), H(), false);
+  composer.setSize(W(), H());
+  bloom.setSize(W(), H());
+}
+window.addEventListener('resize', resize);
+
+/* ---------------- loader (hide once first portrait frame draws, or max timeout) ---------------- */
+const loader = document.getElementById('loader');
+let loaderGone = false;
+function hideLoader(){
+  if (loaderGone) return;
+  loaderGone = true;
+  loader.classList.add('gone');
+}
+/* hard fallback so the page never gets stuck behind the loader */
+const LOADER_MAX = 2600;
+setTimeout(hideLoader, LOADER_MAX);
+
+/* ---------------- portrait : scroll-scrubbed frame sequence ----------------
+   An Apple-style image-sequence scrub: a folder of B&W portrait frames is
+   preloaded into Image objects, then drawn to #portrait keyed by scroll
+   progress. The subject's head-turn plays back as you scroll. The portrait
+   fades in over the orb and dims as text chapters take focus.            */
+const pCanvas = document.getElementById('portrait');
+const pCtx = pCanvas.getContext('2d');
+const PCOUNT = mobile ? 77 : 115;
+const PDIR = mobile ? 'frames/mobile' : 'frames/desktop';
+const pImages = [];
+let pLoaded = 0, pFirstDrawn = false;
+
+function pResize(){
+  const dpr = Math.min(mobile ? 1.5 : 2, window.devicePixelRatio || 1);
+  pCanvas.width  = W() * dpr;
+  pCanvas.height = H() * dpr;
+  pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+pResize();
+window.addEventListener('resize', pResize);
+
+for (let i = 0; i < PCOUNT; i++){
+  const img = new Image();
+  img.onload = () => {
+    pLoaded++;
+    if (!pFirstDrawn && img === pImages[0]){
+      /* first frame in view ASAP so the portrait appears with the loader */
+      pFirstDrawn = true;
+      pCanvas.classList.add('ready');
+      drawPortrait(0);
+      hideLoader();
+    }
+  };
+  img.onerror = () => { pLoaded++; if (i === 0) hideLoader(); };
+  img.src = `${PDIR}/f${String(i+1).padStart(4,'0')}.jpg`;
+  pImages.push(img);
+}
+/* if frame 0 was cached and is already complete, fire the first-draw now */
+if (pImages[0].complete && pImages[0].naturalWidth && !pFirstDrawn){
+  pFirstDrawn = true;
+  pCanvas.classList.add('ready');
+  drawPortrait(0);
+  hideLoader();
+}
+
+/* drawn portrait : sized to fit the right half on desktop, full-bleed on mobile.
+   Capped so it never sprawls across the center into the text column. */
+function drawPortrait(idx){
+  const img = pImages[idx];
+  if (!img || !img.complete || !img.naturalWidth) return;
+  let side, x, y;
+  if (mobile){
+    side = Math.min(H(), W());            /* full-bleed, centered */
+    x = (W() - side) / 2; y = (H() - side) / 2;
+  } else {
+    /* right half: cap at 46vw wide, vertically centered, never taller than 92vh */
+    side = Math.min(W() * 0.46, H() * 0.92);
+    x = W() - side - W() * 0.06;          /* 6vw inset from the right edge */
+    y = (H() - side) / 2;                 /* vertically centered */
+  }
+  pCtx.clearRect(0, 0, W(), H());
+  pCtx.drawImage(img, x, y, side, side);
+}
+
+/* in reduced-motion, show a single still instead of scrubbing.
+   pPort is a faster-eased progress so the portrait responds from the very
+   first scroll pixel (the main `progress` lerps slowly and feels dead at the
+   top of the page). we also remap the scrub so the opening turn is sensitive. */
+let pPort = 0;
+function portraitUpdate(p, raw){
+  if (reduceMotion){ drawPortrait(Math.floor(PCOUNT*0.25)); return; }
+  /* fast ease toward raw progress — snappy from the first scroll */
+  pPort += (raw - pPort) * 0.35;
+  /* remap: emphasize the opening third so a little scroll turns the head a lot */
+  const scrub = pPort < 0.33 ? pPort / 0.33 * 0.55 : 0.55 + (pPort - 0.33) / 0.67 * 0.45;
+  const idx = Math.max(0, Math.min(PCOUNT-1, Math.floor(scrub * (PCOUNT-1))));
+  drawPortrait(idx);
+  /* portrait presence: strong at the open, recedes through the middle, returns at the close */
+  const open = clamp01(1 - pPort*2.6);             /* fade out by ~38% scroll */
+  const close = clamp01((pPort - 0.90) / 0.07);    /* fade back in at the very end */
+  const base = mobile ? 0.94 : 1.0;
+  pCanvas.style.opacity = Math.max(open, close) * base;
+}
+function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+
+/* ---------------- loop ---------------- */
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(0.05, (now - last)/1000); last = now;
+
+  /* smooth the scroll progress */
+  progress += (rawProgress - progress) * 0.08;
+
+  const k = sampleKeys(progress);
+
+  /* camera follows a point offset slightly by the cursor for parallax */
+  const px = (mouse.x / W() - 0.5) * 0.6;
+  const py = (mouse.y / H() - 0.5) * 0.6;
+  camera.position.x += (k.cam[0] + px - camera.position.x) * 0.06;
+  camera.position.y += (k.cam[1] - py - camera.position.y) * 0.06;
+  camera.position.z += (k.cam[2] - camera.position.z) * 0.06;
+  camera.lookAt(0, 0, 0);
+
+  renderer.toneMappingExposure += (k.exp - renderer.toneMappingExposure) * 0.08;
+
+  /* orb uniforms */
+  const t = now * 0.001;
+  orbMat.uniforms.uTime.value = t;
+  orbMat.uniforms.uAmp.value = k.amp + (reduceMotion?0:Math.sin(t*0.7)*0.015);
+  orbMat.uniforms.uMix.value = k.mix;
+  orb.rotation.y = t * 0.06 + progress * 1.6;
+  orb.rotation.x = progress * 0.8;
+  core.scale.setScalar(1 + Math.sin(t*1.2)*0.03);
+
+  /* crystals orbit */
+  for (const c of crystals){
+    const u = c.userData;
+    u.a += dt * u.sp;
+    c.position.set(Math.cos(u.a)*u.r, u.y + Math.sin(t*0.8 + u.bob)*0.3, Math.sin(u.a)*u.r);
+    c.rotation.x += dt*u.rs; c.rotation.y += dt*u.rs*0.8;
+  }
+  crystalGroup.rotation.y = progress * 0.8;
+
+  /* dust slow drift */
+  dust.rotation.y = t * 0.01;
+  dust.rotation.x = t * 0.006;
+
+  /* bloom swells slightly with amp */
+  bloom.strength = (mobile?0.55:0.85) + k.amp * 0.6;
+
+  /* UI */
+  updateSections(progress);
+  portraitUpdate(progress, rawProgress);
+  updateDragon(rawProgress);
+  pctEl.textContent = String(Math.round(progress*100)).padStart(2,'0');
+  hint.style.opacity = progress < 0.04 ? 1 : 0;
+
+  /* cursor */
+  mouse.rx += (mouse.x - mouse.rx) * 0.18;
+  mouse.ry += (mouse.y - mouse.ry) * 0.18;
+  cur.style.transform = `translate(${mouse.x}px,${mouse.y}px) translate(-50%,-50%)`;
+  curRing.style.transform = `translate(${mouse.rx}px,${mouse.ry}px) translate(-50%,-50%)`;
+
+  composer.render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+
 </body>
-</html> 
+</html>
