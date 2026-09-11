@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Anshul Singh — Portfolio</title>
-<meta name="description" content="Anshul Singh — software developer & data analytics specialist. A portfolio in motion." />
+<title>Anshul Singh — Forward Deployed Engineer</title>
+<meta name="description" content="Anshul Singh — engineer for the messy middle between a model and a business. 28 merged upstream PRs, an eval-first LLM agent, two years of client-facing work. Open to forward deployed engineering roles anywhere." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&display=swap" rel="stylesheet" />
@@ -83,6 +83,8 @@
   /* split sections sit left, leaving the right half for the portrait */
   .section.split{max-width:min(40ch,40vw);text-align:left;margin-right:auto;margin-left:6vw;
     align-self:center;}
+  .section.split{justify-self:start;}
+  .section.split h1{font-size:clamp(40px,5.4vw,84px);}
   .section.split .kicker{justify-content:flex-start;}
   .section.split .deck{margin-inline:0;}
   .section.split .work{margin-inline:0;}
@@ -140,6 +142,8 @@
     .section.split .deck,.section.split .work{margin-inline:auto;}
     .section.split .craft,.section.split .links{justify-content:center;}
     .section h1{font-size:clamp(40px,11vw,72px);}
+    .section.split h1{font-size:clamp(36px,10vw,64px);}
+    .section h1,.section .deck{text-shadow:0 2px 28px rgba(0,0,0,0.95),0 0 6px rgba(0,0,0,0.8);}
     .work{max-width:90vw;}
     .work .row{grid-template-columns:auto 1fr;gap:12px;}
     .work .row .y{grid-column:2;color:var(--dim);}
@@ -147,9 +151,81 @@
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:0.001s !important;transition-duration:0.05s !important;}
   }
+  /* ---------------- the dossier : long-form case studies below the cinematic intro ---------------- */
+  html{scroll-behavior:smooth;}
+  .work a.row{cursor:none;transition:color 0.3s;}
+  .work a.row:hover .t{color:var(--accent);}
+  .deck.small{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-top:22px;}
+  body.reading .dragon,body.reading .pct,body.reading .hint{opacity:0;transition:opacity 0.4s;}
+
+  .dossier{position:relative;z-index:5;background:#060606;padding:16vh 6vw 22vh;
+    border-top:1px solid var(--rule);box-shadow:0 -60px 120px rgba(0,0,0,0.9);}
+  .dossier .inner{max-width:78ch;margin:0 auto;}
+  .dossier .kicker{font-family:var(--sans);font-size:11px;letter-spacing:0.26em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px;display:flex;align-items:center;gap:14px;}
+  .dossier .kicker::before{content:"";width:38px;height:1px;background:var(--rule);flex:none;}
+  .dossier h2{font-family:var(--serif);font-weight:300;font-variation-settings:'opsz' 144;
+    font-size:clamp(38px,5.4vw,78px);line-height:0.98;letter-spacing:-0.035em;margin:0 0 26px;}
+  .dossier h2 em{font-style:italic;font-weight:400;color:var(--accent);}
+  .dossier h3{font-family:var(--serif);font-weight:400;font-size:clamp(24px,2.6vw,34px);
+    line-height:1.15;letter-spacing:-0.015em;margin:0 0 18px;}
+  .dossier p{font-weight:300;font-size:clamp(15px,1.15vw,17.5px);line-height:1.7;color:var(--ink);
+    margin:0 0 16px;max-width:68ch;}
+  .dossier p.lede{font-size:clamp(17px,1.4vw,21px);color:var(--ink);max-width:60ch;}
+  .dossier p.sub{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);margin:8px 0 6px;}
+  .dossier p em,.dossier div em{font-style:italic;color:var(--dim);}
+  .dossier a{color:var(--ink);border-bottom:1px solid var(--whisper);padding-bottom:1px;
+    transition:border-color 0.3s,color 0.3s;}
+  .dossier a:hover{color:var(--accent);border-color:var(--accent);}
+
+  .case{padding:72px 0 40px;border-top:1px solid var(--rule);margin-top:40px;}
+  .case .meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-size:11px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--dim);margin:0 0 26px;}
+  .case .meta b{color:var(--ink);font-weight:500;letter-spacing:0.12em;}
+  .case .meta a{text-transform:none;letter-spacing:0.06em;font-size:12px;}
+
+  .steps{display:grid;gap:22px;margin-top:10px;}
+  .step{display:grid;grid-template-columns:13ch 1fr;gap:20px;border-top:1px solid var(--rule);padding-top:16px;}
+  .step .k{font-family:var(--sans);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--accent);padding-top:6px;line-height:1.7;}
+  .step p:last-child{margin-bottom:4px;}
+
+  .numbers{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0 22px;}
+  .num{border:1px solid var(--rule);border-radius:12px;padding:16px 18px;}
+  .num b{display:block;font-family:var(--serif);font-weight:300;font-size:clamp(22px,2vw,28px);
+    letter-spacing:-0.02em;line-height:1.1;margin-bottom:8px;font-variant-numeric:tabular-nums;}
+  .num span{font-family:var(--sans);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);}
+
+  .prs{display:grid;gap:4px;margin:6px 0 22px;}
+  .pr{display:grid;grid-template-columns:15ch 1fr;gap:20px;padding:16px 0;border-top:1px solid var(--rule);
+    font-size:14.5px;line-height:1.6;font-weight:300;}
+  .pr .n{font-family:var(--sans);font-size:11px;letter-spacing:0.14em;color:var(--accent);padding-top:5px;line-height:1.6;}
+  .pr a.t{font-family:var(--serif);font-style:italic;font-size:19px;display:table;margin-bottom:6px;border-bottom-color:transparent;}
+  .pr a.t:hover{border-bottom-color:var(--accent);}
+
+  .timeline .row{display:grid;grid-template-columns:15ch 1fr;gap:20px;padding:16px 0;border-top:1px solid var(--rule);
+    font-size:14.5px;line-height:1.6;font-weight:300;}
+  .timeline .y{font-family:var(--sans);font-size:11px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;padding-top:5px;}
+  .timeline .t{font-family:var(--serif);font-style:italic;font-size:18px;display:block;margin-bottom:4px;}
+
+  .principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:8px;}
+  .pr-card{border:1px solid var(--rule);border-radius:14px;padding:22px 24px;}
+  .pr-card h4{font-family:var(--serif);font-weight:400;font-size:21px;margin:0 0 10px;letter-spacing:-0.01em;}
+  .pr-card p{font-size:14.5px;margin:0;}
+
+  .foot{margin-top:36px;padding-top:26px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;
+    gap:16px 30px;font-family:var(--sans);font-size:13px;letter-spacing:0.04em;}
+
+  @media (max-width:760px){
+    .dossier{padding:12vh 6vw 16vh;}
+    .step,.pr,.timeline .row{grid-template-columns:1fr;gap:6px;}
+    .step .k br{display:none;}
+    .case{padding:52px 0 28px;}
+  }
+
 </style>
 </head>
-<body>
+<body id="top">
 
 <canvas id="canvas"></canvas>
 <canvas id="portrait"></canvas>
@@ -215,35 +291,35 @@
 
   <section class="section split" data-c="0.06" data-h="0.10">
     <div class="kicker">chapter one · an introduction</div>
-    <h1>hi, i'm <em>Anshul</em>.<br/>i build things<br/>that think.</h1>
-    <p class="deck">software developer &amp; data analytics specialist. i build intelligent automation, analyze business data for insight, and ship scalable applications — with a focus on AI/ML that solves real problems.</p>
+    <h1>hi, i'm <em>Anshul</em>.<br/>i ship into<br/>codebases i've<br/>never seen.</h1>
+    <p class="deck">engineer for the messy middle between a model and a business. this summer: 28 fixes merged upstream into typeshed, pylint, astroid, litestream and corsair; an eval-first LLM agent built solo in 72 hours; two years turning what clients say into what ships. <em>looking for a forward deployed engineering role, anywhere.</em></p>
   </section>
 
   <section class="section" data-c="0.30" data-h="0.13">
-    <div class="kicker">chapter two · featured work</div>
+    <div class="kicker">chapter two · case studies</div>
     <h1>the <em>work</em>.</h1>
     <div class="work">
-      <div class="row"><span class="n">01</span><span class="t">Automated Trading Bot</span><span class="y">Python · AI</span></div>
-      <div class="row"><span class="n">02</span><span class="t">Image Captioning (RCNN + LSTM)</span><span class="y">CV · DL</span></div>
-      <div class="row"><span class="n">03</span><span class="t">Automated Agriculture System</span><span class="y">IoT · ML</span></div>
-      <div class="row"><span class="n">04</span><span class="t">Dynamo Log Report</span><span class="y">Python · AWS</span></div>
-      <div class="row"><span class="n">05</span><span class="t">Research Publication</span><span class="y">IRJMETS</span></div>
+      <a class="row" href="#label-lens"><span class="n">01</span><span class="t">Label Lens — eval-first LLM agent</span><span class="y">Python · vision · evals</span></a>
+      <a class="row" href="#open-source"><span class="n">02</span><span class="t">Open source, upstream</span><span class="y">28 merged · 3 languages</span></a>
+      <a class="row" href="#agent-eval"><span class="n">03</span><span class="t">Agent evaluation &amp; data quality</span><span class="y">Scale AI · Invisible · Harbor</span></a>
+      <a class="row" href="#trading"><span class="n">04</span><span class="t">Live trading bot on AWS</span><span class="y">Lambda · ops</span></a>
     </div>
+    <p class="deck small">scroll past the end for the full write-ups.</p>
   </section>
 
   <section class="section" data-c="0.54" data-h="0.11">
-    <div class="kicker">chapter three · skills &amp; tools</div>
+    <div class="kicker">chapter three · the stack</div>
     <h1>the <em>stack</em>.</h1>
-    <p class="deck">Python &amp; JavaScript for building. TensorFlow &amp; computer vision for seeing. AWS Lambda &amp; REST APIs for scale. MySQL &amp; data analytics for insight.</p>
+    <p class="deck">Python for everything that matters. TypeScript, Go and Groovy where the codebase demanded it. LLM agents built with the eval as the steering wheel, not the homework check.</p>
     <div class="craft">
-      <span>Python</span><span>JavaScript</span><span>TensorFlow</span><span>Computer Vision</span><span>Data Analytics</span><span>AWS Lambda</span><span>MySQL</span><span>REST APIs</span><span>IoT</span><span>PHP</span>
+      <span>Python</span><span>TypeScript</span><span>Go</span><span>Groovy</span><span>LLM agents</span><span>Evals</span><span>Prompt &amp; tool design</span><span>MCP</span><span>AWS Lambda</span><span>Docker</span><span>SQL</span><span>Git &amp; CI</span><span>Claude Code · Cursor</span>
     </div>
   </section>
 
   <section class="section" data-c="0.76" data-h="0.10">
     <div class="kicker">chapter four · about</div>
-    <h1>ship,<br/>then <em>sharpen</em>.</h1>
-    <p class="deck">Honours in Computer Science &amp; Business Systems from SASTRA University (CGPA 8.01). Worked at <em>ZOHO</em>, improving business efficiency through data analysis and AI. 3+ major projects, 2+ industry engagements, 1 research publication.</p>
+    <h1>read first,<br/>then <em>ship</em>.</h1>
+    <p class="deck">B.Tech Honours in Computer Science &amp; Business Systems, SASTRA University (CGPA 8.01). Revenue operations at <em>Zoho</em>, trading bots on AWS at <em>CleverBharat</em>, an 11-person squad at <em>Scale AI</em>, client-facing Groovy work at <em>TCS</em>. Then a summer of upstream open source. Based in New Delhi; will relocate or travel anywhere.</p>
   </section>
 
   <section class="section split" data-c="0.94" data-h="0.06">
@@ -251,15 +327,166 @@
     <h1>let's <em>talk</em>.</h1>
     <div class="links">
       <a href="mailto:emmanshul@gmail.com">emmanshul@gmail.com</a>
-      <a href="https://github.com/ekanshul" target="_blank">GitHub</a>
-      <a href="https://linkedin.com/in/ekanshul" target="_blank">LinkedIn</a>
-      <a href="https://x.com/ekanshul07" target="_blank">Twitter / X</a>
+      <a href="https://github.com/ekanshul" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/ekanshul" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#dossier">case studies ↓</a>
     </div>
   </section>
 
 </div>
 
 <div class="scroll-spacer"></div>
+
+<main class="dossier" id="dossier">
+  <div class="inner">
+
+    <div class="kicker">the dossier · four engagements, written up the way they ran</div>
+    <h2>problem. scope. <em>measure.</em> hand off.</h2>
+    <p class="lede">Every write-up below follows the same shape a forward deployment does: who the customer was, what I cut and why, how I knew it worked, and what I left them with. Numbers link to the evidence.</p>
+
+    <!-- ============ 01 LABEL LENS ============ -->
+    <article class="case" id="label-lens">
+      <div class="kicker">case study 01 · solo build · 28–31 aug 2026</div>
+      <h3>Label Lens — decode what's actually in your food</h3>
+      <div class="meta">
+        <span>role <b>everything</b></span>
+        <span>stack <b>Python stdlib · Groq vision model · phone web UI</b></span>
+        <span><a href="https://github.com/ekanshul/label-lens" target="_blank" rel="noopener">repo</a></span>
+        <span><a href="https://github.com/ekanshul/label-lens/tree/main/artifacts/reports" target="_blank" rel="noopener">sample reports</a></span>
+        <span><a href="https://github.com/ekanshul/label-lens/blob/main/CHANGELOG.md" target="_blank" rel="noopener">changelog with evidence</a></span>
+      </div>
+
+      <div class="steps">
+        <div class="step"><div class="k">the customer</div><div>
+          <p>An Indian shopper in a kirana aisle holding a packet that says <em>"Flavour Enhancers (627, 631), Caramel (150d), Emulsifier (471)"</em>. Six seconds of attention, no way to decode a single code, and the top search result calls citric acid dangerous. The information exists at EFSA, the FDA and the EU register. It is not reachable in six seconds.</p>
+        </div></div>
+
+        <div class="step"><div class="k">the scoping</div><div>
+          <p>The model gets one job: transcribe. Identity, regulatory tier and citations come from a 49-entry database sourced line by line to the regulators, so a tier can only be wrong if the database is wrong. It cannot be hallucinated. A verifier then drops any code the transcription cannot support.</p>
+          <p>I refused to build the obvious next feature, a "safe products" recommender. Endorsing named products is a stronger claim than the evidence carries. It is still not built.</p>
+        </div></div>
+
+        <div class="step"><div class="k">the eval</div><div>
+          <p>Thirteen real packets from my kitchen, photographed on a phone. Ground truth verified by hand against each physical label, which caught three missing codes and one wrong subtype in the model-drafted version. Same scorer and same model on both sides. The baseline is the one-shot "list the harmful chemicals" prompt everyone writes first.</p>
+        </div></div>
+
+        <div class="step"><div class="k">the finding</div><div>
+          <p>The first full eval scored my agent <em>worse</em> than the baseline. Under deadline pressure the tempting move was to switch models. The per-task records said otherwise: five additive-free products were being scored zero for an honest empty answer, grouped codes like "(627, 631)" resolved to the first only, and subtype notation like "170(i)" could never match. Three fixes to my measurement code, zero to the model. The ruler was broken.</p>
+        </div></div>
+
+        <div class="step"><div class="k">the outcome</div><div>
+          <div class="numbers">
+            <div class="num"><b>0.812 → 0.931</b><span>mean extraction F1</span></div>
+            <div class="num"><b>8 → 9 / 13</b><span>labels extracted perfectly</span></div>
+            <div class="num"><b>1 → 0</b><span>crashed scans</span></div>
+            <div class="num"><b>0</b><span>regressions vs baseline</span></div>
+            <div class="num"><b>$0.038</b><span>cost for all 13 labels</span></div>
+          </div>
+          <p>Invented codes fell from 6 to 5, not the 3× the interim number suggested. I published the wrong interim figure and the corrected one side by side, with the reason: rescoring old output is not the same as re-running the fixed pipeline live.</p>
+        </div></div>
+
+        <div class="step"><div class="k">production notes</div><div>
+          <p>Real-device testing found what localhost never will: a phone hotspot that was IPv6-only, a Cloudflare 403 caused by Python's default User-Agent, 4032-pixel uploads tripping rate limits (fixed with browser-side downscaling at identical extraction quality), and truncated request bodies from a flaky link. Every failure path saves its evidence. The reproducibility gate was rewritten to fail loudly when a run has no credentials, after it once reported PASSED on a run that reproduced nothing.</p>
+        </div></div>
+
+        <div class="step"><div class="k">what's next</div><div>
+          <p>The remaining errors are vision misreads (627 transcribed as 621) that verification structurally cannot catch, because it checks the model against its own reading. Next build: a second independent transcription pass with disagreement flagging, so a misread becomes a visible conflict instead of a confident wrong answer.</p>
+        </div></div>
+      </div>
+    </article>
+
+    <!-- ============ 02 OPEN SOURCE ============ -->
+    <article class="case" id="open-source">
+      <div class="kicker">case study 02 · jul–sep 2026 · 11 codebases · python, typescript, go</div>
+      <h3>Open source, upstream</h3>
+      <p>The nearest thing to a forward deployment you can do alone: pick a production codebase you have never read, find the bug, reproduce it on <em>main</em>, fix it the way the maintainers would, and negotiate the change through review with the people who own the code.</p>
+      <div class="numbers">
+        <div class="num"><b>28</b><span>merged PRs</span></div>
+        <div class="num"><b>19</b><span>merged in typeshed alone</span></div>
+        <div class="num"><b>11</b><span>codebases</span></div>
+        <div class="num"><b>3</b><span>languages</span></div>
+      </div>
+      <p class="sub">Six that show the pattern.</p>
+      <div class="prs">
+        <div class="pr"><span class="n">typeshed #16244</span><div><a class="t" href="https://github.com/python/typeshed/pull/16244" target="_blank" rel="noopener">A CI crash that only happened on some runners</a>Daily stubtest died with exit −4 and no output, but passed locally and on macOS. Timing data from three consecutive runs (25 s fresh compile against 6–9 s cache hits) showed a pip wheel compiled with <em>-march=native</em> on one host being restored on another CPU. Fix: build without it, and revert the earlier darwin-only workaround.</div></div>
+        <div class="pr"><span class="n">astroid #3238</span><div><a class="t" href="https://github.com/pylint-dev/astroid/pull/3238" target="_blank" rel="noopener">A wrong signature in the object model, three years of false positives</a>The fallback <em>__new__</em> was declared as (self, cls), but <em>__new__</em> has no implicit parameter. Every call through ssl, array and datetime produced spurious argument errors in pylint. Fixed with tests; closed a pylint issue open since 2023.</div></div>
+        <div class="pr"><span class="n">pylint #11307</span><div><a class="t" href="https://github.com/pylint-dev/pylint/pull/11307" target="_blank" rel="noopener">Ten checkers rejecting valid stdlib code</a>The <em>invalid-*-returned</em> family compared class <em>names</em> to builtin names, so any subclass of str, int or dict was rejected. Switched to a real subtype check, which also closed a loophole for unrelated classes merely named "str".</div></div>
+        <div class="pr"><span class="n">litestream #1452 · Go</span><div><a class="t" href="https://github.com/benbjohnson/litestream/pull/1452" target="_blank" rel="noopener">Two config entries, one directory, a silent race</a>Duplicate database paths started two managers on one metadata directory and raced on temp files. Added cross-entry validation at config load with an error naming both entries. Reproduced on main first; approved by the project's author.</div></div>
+        <div class="pr"><span class="n">corsair #854, #855 · TypeScript</span><div><a class="t" href="https://github.com/corsairdev/corsair/pull/855" target="_blank" rel="noopener">Webhook verifiers that fail closed</a>Constant-time comparison for the Outlook client state instead of <em>===</em>; the Figma verifier now errors when its passcode is missing instead of accepting everything. Unit tests for match, mismatch and missing.</div></div>
+        <div class="pr"><span class="n">redash #7809 · in review</span><div><a class="t" href="https://github.com/getredash/redash/pull/7809" target="_blank" rel="noopener">Dynamic date parameters, resolved where scheduled queries can use them</a>Moved parameter resolution to the backend so scheduled refreshes stop running with stale dates; 313 lines across the query model and the refresh path, with the stored query hash refreshed before enqueueing. A sibling layout-migration fix (<a href="https://github.com/getredash/redash/pull/7791" target="_blank" rel="noopener">#7791</a>) was approved after two rounds of maintainer review.</div></div>
+      </div>
+      <p>Every PR body reads like a hand-off note: reproduction on main, what changed, what was deliberately left out, and the evidence. Where a coding agent helped, the PR says so. The agent writes fast; I own what ships.</p>
+    </article>
+
+    <!-- ============ 03 AGENT EVAL ============ -->
+    <article class="case" id="agent-eval">
+      <div class="kicker">case study 03 · nov 2024 – jul 2026 · scale ai · invisible technologies · harbor</div>
+      <h3>Agent evaluation &amp; data quality</h3>
+      <p>Before building agents I spent a year on the other side of the loop: producing and grading the data that trains and evaluates them, and running the people who did it.</p>
+      <div class="steps">
+        <div class="step"><div class="k">Scale AI<br/>squad leader</div><div>
+          <p>Led a squad of 11 contributors on RLHF and agent-trajectory projects. Owned their throughput, their quality and the reporting to queue managers. When the same questions kept coming back, I rewrote the guidelines until they stopped. Single point of contact between the squad and the project owners, which meant translating in both directions.</p>
+        </div></div>
+        <div class="step"><div class="k">Invisible<br/>coding specialist</div><div>
+          <p>Worked with the project manager to fix the task taxonomy on an enterprise AI project, triaged bugs in the pipeline, and contributed to a second enterprise project. Part-time, remote, alongside the full-time role.</p>
+        </div></div>
+        <div class="step"><div class="k">Harbor task<br/>dynamo-log-report</div><div>
+          <p>A <a href="https://github.com/ekanshul/dynamo-log-report" target="_blank" rel="noopener">Terminal-Bench 2 task</a> for evaluating coding agents: parse an Apache access log into a JSON report. Dockerfile pinned by digest, an oracle solution, and a pytest verifier that emits a reward. Oracle scores 1.0, a no-op scores 0.0, so the task cannot be passed by accident.</p>
+        </div></div>
+      </div>
+      <p>Why it matters for deployment work: evals are the steering wheel. I have written rubrics that eleven people could apply consistently, and I have watched a rubric that could not score an honest empty answer make a working system look broken.</p>
+    </article>
+
+    <!-- ============ 04 TRADING ============ -->
+    <article class="case" id="trading">
+      <div class="kicker">case study 04 · nov 2024 – jan 2025 · cleverbharat</div>
+      <h3>A live trading bot on AWS</h3>
+      <p>Built and iterated option-selling strategies, deployed them as scheduled Lambda functions, and watched them trade real money in real time. Broker calls were IP-whitelisted and HMAC-signed. Most of the job was operations: reading logs at market open, deciding when a strategy's drawdown meant a bug and when it meant a bad week, and killing it fast when it was a bug.</p>
+      <p>What I will say about returns: nothing you cannot verify, so nothing.</p>
+    </article>
+
+    <!-- ============ HOW I WORK ============ -->
+    <section class="case" id="how">
+      <div class="kicker">how i work with customers</div>
+      <h3>Four habits, each with the receipt.</h3>
+      <div class="principles">
+        <div class="pr-card"><h4>Discovery before code.</h4><p>At Zoho and at TCS the job was the same: sit with the people who own the problem, find the sentence they actually mean, write it down, then build to that sentence and not the ticket.</p></div>
+        <div class="pr-card"><h4>Always be scoping.</h4><p>Label Lens could have shipped a "safe products" recommender. The evidence could not carry the claim, so it does not exist. Saying no early is cheaper than a retraction.</p></div>
+        <div class="pr-card"><h4>Measure, or say you can't.</h4><p>When the eval said my agent was worse, I read the failures before touching the model. I publish the interim number and the corrected number together, with the reason.</p></div>
+        <div class="pr-card"><h4>Leave it runnable.</h4><p>Every PR is a hand-off note a stranger can act on. Every squad guideline was rewritten until the questions stopped. The goal is a customer who does not need me next quarter.</p></div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <section class="case" id="experience">
+      <div class="kicker">experience</div>
+      <h3>Where I've been.</h3>
+      <div class="timeline">
+        <div class="row"><span class="y">feb 2025 – now</span><div><span class="t">Tata Consultancy Services — System Engineer, New Delhi</span>Client-facing work on a Keysight engagement: gather requirements directly from the client, implement the changes in Groovy, and land them in the next release.</div></div>
+        <div class="row"><span class="y">jan – mar 2026</span><div><span class="t">Invisible Technologies — Coding Specialist (part-time, remote)</span>Task taxonomy, bug triage and contributions across two enterprise AI data projects.</div></div>
+        <div class="row"><span class="y">nov 2024 – nov 2025</span><div><span class="t">Scale AI — Squad Leader (remote)</span>Led 11 contributors: throughput, quality, guidelines, reporting to queue managers.</div></div>
+        <div class="row"><span class="y">nov 2024 – jan 2025</span><div><span class="t">CleverBharat — Algorithmic Trader</span>Strategies, deployment on AWS, live monitoring.</div></div>
+        <div class="row"><span class="y">mar – aug 2024</span><div><span class="t">Zoho — Revenue Operations Trainee, growth team, Chennai</span>Pulled data across teams and turned it into the reports leadership actually used.</div></div>
+        <div class="row"><span class="y">2020 – 2024</span><div><span class="t">SASTRA University — B.Tech Honours, Computer Science &amp; Business Systems</span>CGPA 8.01. Co-authored a financial-statement analysis of Zomato with the School of Management (<a href="https://www.doi.org/10.56726/IRJMETS37685" target="_blank" rel="noopener">IRJMETS, Apr 2023</a>). Certifications: Career Essentials in Generative AI, Microsoft &amp; LinkedIn (2024); Industry 4.0 and Industrial IoT, NPTEL (2022).</div></div>
+      </div>
+    </section>
+
+    <!-- ============ AVAILABILITY / CONTACT ============ -->
+    <section class="case" id="contact">
+      <div class="kicker">availability</div>
+      <h3>Anywhere. Really.</h3>
+      <p>Based in New Delhi. Will relocate to any city, work remote or on-site, and travel as much as the engagement needs. Comfortable across time zones; the open-source work above was done with maintainers in Europe and the US.</p>
+      <div class="foot">
+        <a href="mailto:emmanshul@gmail.com">emmanshul@gmail.com</a>
+        <a href="https://github.com/ekanshul" target="_blank" rel="noopener">github.com/ekanshul</a>
+        <a href="https://linkedin.com/in/ekanshul" target="_blank" rel="noopener">linkedin.com/in/ekanshul</a>
+        <a href="#top">back to the top ↑</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
 
 <script type="importmap">
 {
@@ -455,10 +682,15 @@ composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
 /* ---------------- scroll progress (lerped for butter) ---------------- */
-let rawProgress = 0, progress = 0;
+let rawProgress = 0, progress = 0, reading = false, covered = false;
+const spacer = document.querySelector('.scroll-spacer');
 function onScroll(){
-  const max = document.documentElement.scrollHeight - H();
+  /* the cinematic intro spans only the spacer; the dossier below scrolls normally over it */
+  const max = spacer.offsetHeight - H();
   rawProgress = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+  reading = window.scrollY > max + 10;          /* dossier is entering the viewport */
+  covered = window.scrollY > max + H();          /* dossier fully covers the 3D scene */
+  document.body.classList.toggle('reading', reading);
 }
 window.addEventListener('scroll', onScroll, { passive:true });
 onScroll();
@@ -508,7 +740,7 @@ const curRing = document.getElementById('curRing');
 const mouse = { x: W()/2, y: H()/2, rx: W()/2, ry: H()/2 };
 window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, {passive:true});
 window.addEventListener('pointerover', e => {
-  const hot = !!(e.target.closest('a, .links a'));
+  const hot = !!(e.target.closest('a, .links a, .work .row'));
   curRing.classList.toggle('hot', hot);
 });
 
@@ -717,7 +949,7 @@ function loop(now){
   cur.style.transform = `translate(${mouse.x}px,${mouse.y}px) translate(-50%,-50%)`;
   curRing.style.transform = `translate(${mouse.rx}px,${mouse.ry}px) translate(-50%,-50%)`;
 
-  composer.render();
+  if (!covered) composer.render();
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
