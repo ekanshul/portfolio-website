@@ -405,23 +405,22 @@
 
     <!-- ============ 02 OPEN SOURCE ============ -->
     <article class="case" id="open-source">
-      <div class="kicker">case study 02 · jul–sep 2026 · 11 codebases · python, typescript, go</div>
+      <div class="kicker">case study 02 · jul–sep 2026 · 5 codebases · python, typescript, go</div>
       <h3>Open source, upstream</h3>
       <p>The nearest thing to a forward deployment you can do alone: pick a production codebase you have never read, find the bug, reproduce it on <em>main</em>, fix it the way the maintainers would, and negotiate the change through review with the people who own the code.</p>
       <div class="numbers">
         <div class="num"><b>28</b><span>merged PRs</span></div>
         <div class="num"><b>19</b><span>merged in typeshed alone</span></div>
-        <div class="num"><b>11</b><span>codebases</span></div>
+        <div class="num"><b>5</b><span>codebases</span></div>
         <div class="num"><b>3</b><span>languages</span></div>
       </div>
-      <p class="sub">Six that show the pattern.</p>
+      <p class="sub">Five that show the pattern.</p>
       <div class="prs">
         <div class="pr"><span class="n">typeshed #16244</span><div><a class="t" href="https://github.com/python/typeshed/pull/16244" target="_blank" rel="noopener">A CI crash that only happened on some runners</a>Daily stubtest died with exit −4 and no output, but passed locally and on macOS. Timing data from three consecutive runs (25 s fresh compile against 6–9 s cache hits) showed a pip wheel compiled with <em>-march=native</em> on one host being restored on another CPU. Fix: build without it, and revert the earlier darwin-only workaround.</div></div>
         <div class="pr"><span class="n">astroid #3238</span><div><a class="t" href="https://github.com/pylint-dev/astroid/pull/3238" target="_blank" rel="noopener">A wrong signature in the object model, three years of false positives</a>The fallback <em>__new__</em> was declared as (self, cls), but <em>__new__</em> has no implicit parameter. Every call through ssl, array and datetime produced spurious argument errors in pylint. Fixed with tests; closed a pylint issue open since 2023.</div></div>
         <div class="pr"><span class="n">pylint #11307</span><div><a class="t" href="https://github.com/pylint-dev/pylint/pull/11307" target="_blank" rel="noopener">Ten checkers rejecting valid stdlib code</a>The <em>invalid-*-returned</em> family compared class <em>names</em> to builtin names, so any subclass of str, int or dict was rejected. Switched to a real subtype check, which also closed a loophole for unrelated classes merely named "str".</div></div>
         <div class="pr"><span class="n">litestream #1452 · Go</span><div><a class="t" href="https://github.com/benbjohnson/litestream/pull/1452" target="_blank" rel="noopener">Two config entries, one directory, a silent race</a>Duplicate database paths started two managers on one metadata directory and raced on temp files. Added cross-entry validation at config load with an error naming both entries. Reproduced on main first; approved by the project's author.</div></div>
         <div class="pr"><span class="n">corsair #854, #855 · TypeScript</span><div><a class="t" href="https://github.com/corsairdev/corsair/pull/855" target="_blank" rel="noopener">Webhook verifiers that fail closed</a>Constant-time comparison for the Outlook client state instead of <em>===</em>; the Figma verifier now errors when its passcode is missing instead of accepting everything. Unit tests for match, mismatch and missing.</div></div>
-        <div class="pr"><span class="n">redash #7809 · in review</span><div><a class="t" href="https://github.com/getredash/redash/pull/7809" target="_blank" rel="noopener">Dynamic date parameters, resolved where scheduled queries can use them</a>Moved parameter resolution to the backend so scheduled refreshes stop running with stale dates; 313 lines across the query model and the refresh path, with the stored query hash refreshed before enqueueing. A sibling layout-migration fix (<a href="https://github.com/getredash/redash/pull/7791" target="_blank" rel="noopener">#7791</a>) was approved after two rounds of maintainer review.</div></div>
       </div>
       <p>Every PR body reads like a hand-off note: reproduction on main, what changed, what was deliberately left out, and the evidence. Where a coding agent helped, the PR says so. The agent writes fast; I own what ships.</p>
     </article>
